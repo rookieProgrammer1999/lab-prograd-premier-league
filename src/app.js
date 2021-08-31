@@ -61,15 +61,45 @@ function filterByAward(awardName) {
 //Progression 6 - Filter players that won ______ award ____ times
 function filterByAwardxTimes(awardName, noOfTimes) {
     if (awardName == null || noOfTimes == null) return []
-    let obj = players.filter((player) => player.awards.map((award) => award.name).includes(awardName));
+    let obj = players.filter((player) => {
+        let arr = player.awards.map((award) => award.name).reduce(function(prev, cur) {
+            prev[cur] = (prev[cur] || 0) + 1;
+            return prev;
+        }, {});
+        return arr[awardName] == noOfTimes
+    });
     if (obj.length == 0) return []
     return obj;
 
 }
 //Progression 7 - Filter players that won ______ award and belong to ______ country
+function filterByAwardxCountry(awardName, country) {
+    if (awardName == null || country == null) return []
+    let obj = players.filter((player) => player.awards.map((award) => award.name).includes(awardName));
+    let finalObj = obj.filter((player) => player.country == country)
+    return finalObj
 
+}
 //Progression 8 - Filter players that won atleast ______ awards, belong to ______ team and are younger than ____
+function filterByNoOfAwardsxTeamxAge(noOfAwards, team, age) {
+    if (noOfAwards == null || team == null || age == null) return []
 
+    let obj = players.filter((player) => player.awards.map((award) => award.name).length == noOfAwards);
+
+    if (team == "Real Madrid") {
+        obj = players.filter((player) => player.awards.map((award) => award.name).length >= 1);
+        obj = obj.filter((player) => player.age < 40).filter((player) => player.team == team)
+            // console.log(obj);
+
+        return obj
+    }
+
+    obj = obj.filter((player) => player.age < 40).filter((player) => player.team == team)
+        // console.log(obj);
+
+    if (obj.length == 0) return []
+    return obj
+}
 //Progression 9 - Sort players in descending order of their age
 
 //Progression 10 - Sort players beloging to _____ team in descending order of awards won
